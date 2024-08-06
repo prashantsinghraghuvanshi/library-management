@@ -4,6 +4,6 @@ const { addBook, getBooks, issueBook } = require('../controllers/book.controller
 
 router.get("/",getBooks);
 router.post("/addBook",addBook);
-// router.patch('/issueBook',issueBook);
+router.patch('/issueBook',issueBook);
 
 module.exports=router;

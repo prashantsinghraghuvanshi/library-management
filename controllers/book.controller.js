@@ -27,25 +27,25 @@ const addBook = async(req,res)=>{
     }
 };
 
-// const issueBook = async (req, res) => {
-//     const title = req.params;
-//     try {
-//       const result = await req.db.query(
-//         `UPDATE books SET status = 'Issued' WHERE title = ?`,
-//         [title]
-//       );
-//       const [rows] = await req.db.query('SELECT * FROM books');
-//       res.render("home",{
-//         data: rows
-//       })
-//     } catch (error) {
-//       console.error('Error in Issuing book : ', error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-//   };
+const issueBook = async (req, res) => {
+    const title = req.body.title;  // Access the title from the request body
+    try {
+        const result = await req.db.query(
+            `UPDATE books SET state = 'Issued' WHERE title = ?`,
+            [title]
+        );
+        const [rows] = await req.db.query('SELECT * FROM books');
+        res.render("home", {
+            data: rows
+        });
+    } catch (error) {
+        console.error('Error in Issuing book:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 module.exports={
     getBooks,
     addBook,
-    // issueBook
+    issueBook
 }
