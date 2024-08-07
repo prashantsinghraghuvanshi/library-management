@@ -56,16 +56,17 @@
                 <td>
                     <form id="issueBookForm-<%= element.id %>">
                         <input type="text" style="display: none;" name="title" value="<%= element.title %>">
-                        <button type="button" onclick="issueBook('<%= element.id %>')">Issue</button>
+                        <button type="button" onclick="issueBook('<%= element.id %>')">Issue Book</button>
                     </form>
                 </td>
+
                 <td>
-                    <form action="/return" method="post">
-                        <input type="text" style="display: none;" 
-                               name="title">
-                        <button type="submit">Return</button>
+                    <form id="returnBookForm-<%= element.id %>">
+                        <input type="text" style="display: none;" name="title" value="<%= element.title %>">
+                        <button type="button" onclick="returnBook('<%= element.id %>')">Return Book</button>
                     </form>
                 </td>
+                
                 <td>
                     <form action="/delete" method="post">
                         <input type="text" style="display: none;" 
@@ -115,6 +116,34 @@
                     window.location.reload(); // Reload the page to see changes
                 } else {
                     console.error('Failed to issue book');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function returnBook(id) {
+            const form = document.getElementById(`returnBookForm-${id}`);
+            const formData = new FormData(form);
+            const title = formData.get('title');
+    
+            try {
+                const response = await fetch('/returnBook', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title: title })
+                });
+    
+                if (response.ok) {
+                    // Handle successful response
+                    const data = await response.json();
+                    console.log('Book returned successfully', data);
+                    // Optionally, update the UI or perform other actions
+                    window.location.reload(); // Reload the page to see changes
+                } else {
+                    console.error('Failed to return book');
                 }
             } catch (error) {
                 console.error('Error:', error);

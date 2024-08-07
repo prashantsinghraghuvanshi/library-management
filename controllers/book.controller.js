@@ -1,5 +1,3 @@
-// const { param } = require("../routes/book.routes");
-
 const getBooks = async(req,res)=>{
     try{
         const[rows]=await req.db.query('SELECT * FROM books');
@@ -16,7 +14,7 @@ const addBook = async(req,res)=>{
     const {title, author, pages, price}=req.body;
     console.log(req.body);
     try{
-        const [result]=await req.db.query('INSERT INTO books (title, author, pages, price) VALUES (?, ?, ?, ?)', [title, author, pages, price]);
+        await req.db.query('INSERT INTO books (title, author, pages, price) VALUES (?, ?, ?, ?)', [title, author, pages, price]);
         const [rows] = await req.db.query('SELECT * FROM books');
         res.render("home",{
             data: rows
@@ -44,8 +42,24 @@ const issueBook = async (req, res) => {
     }
 };
 
+const returnBook = async(req,res)=>{
+    const title=req.body.title;
+    try {
+        const result= await req.db.query(`UPDATE books SET state='Available' WHERE title=?`,[title]);
+        const [rows]=await req.db.query(`SELECT * FROM books`);
+        res.render("home",{
+            data: rows
+        })
+    } catch (error) {
+        console.error("Error in returning a book :", error);
+        res.status(500).json({error: 'Internal Server Error'});
+        
+    }
+}
+
 module.exports={
     getBooks,
     addBook,
-    issueBook
+    issueBook,
+    returnBook
 }
